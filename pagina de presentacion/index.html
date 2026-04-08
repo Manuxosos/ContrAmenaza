@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contra Amenaza — Plataforma de Ciberseguridad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --bg2:       #161b22;
+      --bg3:       #1f2937;
+      --cyan:      #00d4ff;
+      --green:     #00ff88;
+      --red:       #f44336;
+      --white:     #f0f6fc;
+      --muted:     #8b949e;
+      --border:    #30363d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(13,17,23,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-weight: 900; font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: .9rem;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 5% 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,255,136,.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(0,212,255,.1);
+      border: 1px solid rgba(0,212,255,.3);
+      color: var(--cyan); font-size: .8rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 20px; letter-spacing: .05em;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900; line-height: 1.05;
+      background: linear-gradient(135deg, #fff 30%, var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--muted); max-width: 600px; margin: 0 auto 40px;
+    }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      padding: 13px 28px; border-radius: 8px; font-weight: 600;
+      font-size: .95rem; cursor: pointer; text-decoration: none;
+      transition: all .2s; border: none; display: inline-flex;
+      align-items: center; gap: 8px;
+    }
+    .btn-primary {
+      background: var(--cyan); color: #000;
+    }
+    .btn-primary:hover { background: #33ddff; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
+
+    .hero-stats {
+      display: flex; gap: 48px; flex-wrap: wrap; justify-content: center;
+      margin-top: 64px; padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num {
+      font-size: 2.2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-stat-label { font-size: .85rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 90px 5%; }
+    .section-label {
+      font-size: .8rem; font-weight: 700; letter-spacing: .12em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800;
+      margin-bottom: 16px; line-height: 1.2;
+    }
+    .section-desc { color: var(--muted); max-width: 560px; font-size: 1.05rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* ── PROBLEM ── */
+    #problema { background: var(--bg2); }
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    .problem-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px;
+      transition: border-color .2s;
+    }
+    .problem-card:hover { border-color: var(--cyan); }
+    .problem-num {
+      font-size: 2.5rem; font-weight: 900; color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace; opacity: .4;
+      margin-bottom: 12px;
+    }
+    .problem-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    .problem-card p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+
+    /* ── SOLUTION ── */
+    .solution-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .solution-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+      border-top: 3px solid var(--cyan);
+      transition: transform .2s;
+    }
+    .solution-card:hover { transform: translateY(-4px); }
+    .solution-icon { font-size: 2rem; margin-bottom: 12px; }
+    .solution-card h3 { font-size: 1rem; margin-bottom: 6px; }
+    .solution-card p { color: var(--muted); font-size: .88rem; }
+
+    /* ── COURSES ── */
+    #cursos { background: var(--bg2); }
+    .courses-list { margin-top: 48px; display: flex; flex-direction: column; gap: 12px; }
+    .course-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 24px;
+      border-left: 4px solid var(--cyan);
+      transition: background .2s;
+    }
+    .course-row.red { border-left-color: var(--red); }
+    .course-row:hover { background: var(--bg3); }
+    .course-name { font-weight: 600; font-size: 1rem; }
+    .course-desc { color: var(--muted); font-size: .85rem; margin-top: 2px; }
+    .course-meta { display: flex; gap: 20px; flex-shrink: 0; margin-left: 24px; }
+    .course-badge {
+      background: rgba(0,212,255,.1); color: var(--cyan);
+      border: 1px solid rgba(0,212,255,.2);
+      padding: 3px 10px; border-radius: 20px; font-size: .78rem; font-weight: 600;
+      white-space: nowrap;
+    }
+    .course-badge.red {
+      background: rgba(244,67,54,.1); color: var(--red);
+      border-color: rgba(244,67,54,.2);
+    }
+
+    /* ── SIMULATOR ── */
+    .sim-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 24px; margin-top: 48px;
+    }
+    @media(max-width: 700px) { .sim-grid { grid-template-columns: 1fr; } }
+    .sim-col {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+    }
+    .sim-col-title {
+      font-size: .8rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .sim-col-title.blue { color: var(--cyan); }
+    .sim-col-title.red  { color: var(--red); }
+    .sim-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,.5);
+    }
+    .sim-item:last-child { border-bottom: none; }
+    .sim-item-name { font-size: .9rem; }
+    .sim-item-right { display: flex; align-items: center; gap: 10px; }
+    .sim-diff {
+      font-size: .72rem; padding: 2px 8px; border-radius: 20px; font-weight: 600;
+    }
+    .diff-green { background: rgba(0,255,136,.1); color: var(--green); }
+    .diff-yellow { background: rgba(255,200,0,.1); color: #ffc800; }
+    .diff-red    { background: rgba(244,67,54,.1);  color: var(--red); }
+    .sim-pts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem; color: var(--green); font-weight: 600;
+    }
+
+    /* ── TECH STACK ── */
+    #tecnologias { background: var(--bg2); }
+    .tech-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .tech-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color .2s;
+    }
+    .tech-card:hover { border-color: var(--cyan); }
+    .tech-icon {
+      width: 42px; height: 42px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .tech-card h4 { font-size: .95rem; margin-bottom: 2px; }
+    .tech-card p { font-size: .78rem; color: var(--muted); }
+
+    /* ── ARCHITECTURE ── */
+    .arch-flow {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 0; margin: 48px 0 40px;
+    }
+    .arch-box {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 22px; text-align: center;
+      min-width: 140px;
+    }
+    .arch-box-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .arch-box-title { font-size: .85rem; font-weight: 700; }
+    .arch-box-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+    .arch-arrow {
+      color: var(--cyan); font-size: 1.4rem;
+      padding: 0 8px; display: flex; align-items: center;
+    }
+    .arch-details {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .arch-detail {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .arch-detail-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .arch-detail h4 { font-size: .9rem; margin-bottom: 4px; }
+    .arch-detail p { font-size: .82rem; color: var(--muted); }
+
+    /* ── SECURITY ── */
+    #seguridad { background: var(--bg2); }
+    .security-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .security-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 22px;
+      border-top: 3px solid var(--green);
+    }
+    .security-card h3 { font-size: .95rem; margin-bottom: 6px; color: var(--green); }
+    .security-card p { font-size: .85rem; color: var(--muted); }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,212,255,.08); color: var(--cyan);
+      padding: 2px 6px; border-radius: 4px; font-size: .82em;
+    }
+
+    /* ── HOW TO USE ── */
+    .steps {
+      display: flex; flex-direction: column; gap: 0;
+      margin-top: 48px; position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; left: 24px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .step {
+      display: flex; gap: 24px; padding-bottom: 36px; position: relative;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--bg2); border: 2px solid var(--cyan);
+      color: var(--cyan); font-weight: 800; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; z-index: 1;
+    }
+    .step-content { padding-top: 10px; }
+    .step-content h3 { font-size: 1rem; margin-bottom: 4px; }
+    .step-content p { color: var(--muted); font-size: .88rem; }
+
+    /* ── METHODOLOGY ── */
+    #metodologia { background: var(--bg2); }
+    .method-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .method-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px;
+      transition: border-color .2s;
+    }
+    .method-card:hover { border-color: var(--cyan); }
+    .method-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem; color: var(--cyan); font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .method-card h3 { font-size: .95rem; margin-bottom: 6px; }
+    .method-card p { font-size: .82rem; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 40px 5%; text-align: center;
+    }
+    .footer-logo {
+      font-size: 1.5rem; font-weight: 900;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    footer p { color: var(--muted); font-size: .85rem; }
+    footer a { color: var(--cyan); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width: 600px) {
+      .hero-stats { gap: 28px; }
+      .course-meta { display: none; }
+      nav { padding: 0 4%; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚔ Contra Amenaza</div>
+  <ul class="nav-links">
+    <li><a href="#problema">Problema</a></li>
+    <li><a href="#solucion">Solución</a></li>
+    <li><a href="#cursos">Cursos</a></li>
+    <li><a href="#simulador">Simulador</a></li>
+    <li><a href="#tecnologias">Stack</a></li>
+    <li><a href="#seguridad">Seguridad</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🎓 Proyecto de Fin de Curso — Ciberseguridad</div>
+  <h1>Contra Amenaza</h1>
+  <p class="hero-sub">Plataforma web interactiva de entrenamiento en ciberseguridad Blue Team y Red Team, completamente en español, con simulaciones de incidentes reales.</p>
+  <div class="hero-btns">
+    <a href="#como-funciona" class="btn btn-primary">▶ Ver cómo funciona</a>
+    <a href="https://github.com/Manuxosos/ContrAmenaza" target="_blank" class="btn btn-outline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.87.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">6</div><div class="hero-stat-label">Cursos</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">88</div><div class="hero-stat-label">Ejercicios</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">10</div><div class="hero-stat-label">Escenarios</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">1,530</div><div class="hero-stat-label">Puntos posibles</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">En español</div></div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <div class="container">
+    <p class="section-label fade-up">El problema</p>
+    <h2 class="section-title fade-up">¿Por qué existe este proyecto?</h2>
+    <p class="section-desc fade-up">La ciberseguridad enfrenta una crisis global de talento. Ecuador no es la excepción, y las soluciones existentes no están adaptadas a nuestra realidad.</p>
+    <div class="problem-grid">
+      <div class="problem-card fade-up">
+        <div class="problem-num">01</div>
+        <h3>Escasez crítica de profesionales</h3>
+        <p>Según (ISC)² 2022, faltan más de 3.4 millones de especialistas en ciberseguridad a nivel mundial. Ecuador enfrenta esta misma brecha reconocida por el MINTEL en su Estrategia Nacional de Ciberseguridad 2022.</p>
+      </div>
+      <div class="problem-card fade-up">
+        <div class="problem-num">02</div>
+        <h3>Sin plataformas prácticas en español</h3>
+        <p>Plataformas como TryHackMe o HackTheBox están en inglés y tienen costos de suscripción mensual. No existe una alternativa gratuita, práctica y en español orientada a la realidad latinoamericana.</p>
+      </div>
+      <div class="problem-card fade-up">
+        <div class="problem-num">03</div>
+        <h3>Brecha entre teoría y práctica</h3>
+        <p>La mayoría de cursos enseñan conceptos pero no ponen al estudiante frente a logs reales, malware real ni ataques reales. Saber la teoría no es suficiente para trabajar como analista SOC.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCIÓN -->
+<section id="solucion">
+  <div class="container">
+    <p class="section-label fade-up">La solución</p>
+    <h2 class="section-title fade-up">Contra Amenaza resuelve los tres</h2>
+    <p class="section-desc fade-up">Una plataforma web interactiva, gratuita, en español, con contenido alineado a estándares internacionales y simulaciones basadas en incidentes reales.</p>
+    <div class="solution-grid">
+      <div class="solution-card fade-up">
+        <div class="solution-icon">📚</div>
+        <h3>6 Cursos estructurados</h3>
+        <p>Desde fundamentos hasta Red Team. Teoría en cada lección con ejercicios interactivos y retroalimentación inmediata.</p>
+      </div>
+      <div class="solution-card fade-up">
+        <div class="solution-icon">🎯</div>
+        <h3>Simulador de incidentes</h3>
+        <p>10 escenarios con evidencia real — logs SSH, headers de phishing, tráfico C2. Exactamente lo que enfrenta un analista SOC.</p>
+      </div>
+      <div class="solution-card fade-up">
+        <div class="solution-icon">📊</div>
+        <h3>Progreso gamificado</h3>
+        <p>Sistema de puntos, tasa de precisión, barra de progreso por curso. Motivación constante para seguir avanzando.</p>
+      </div>
+      <div class="solution-card fade-up">
+        <div class="solution-icon">🛡️</div>
+        <h3>Estándares internacionales</h3>
+        <p>Contenido basado en OWASP Top 10, MITRE ATT&CK, NIST SP 800-61 y PTES — los mismos frameworks de la industria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURSOS -->
+<section id="cursos">
+  <div class="container">
+    <p class="section-label fade-up">Contenido</p>
+    <h2 class="section-title fade-up">6 Cursos especializados</h2>
+    <p class="section-desc fade-up">Una ruta de aprendizaje completa, progresiva y práctica. Cada curso incluye teoría, ejercicios interactivos y retroalimentación explicada.</p>
+    <div class="courses-list">
+      <div class="course-row fade-up">
+        <div>
+          <div class="course-name">🛡️ Ciberseguridad Blue Team</div>
+          <div class="course-desc">CIA, amenazas, firewalls, SIEM, respuesta a incidentes, Wireshark, forense digital, SOC</div>
+        </div>
+        <div class="course-meta">
+          <span class="course-badge">7 módulos</span>
+          <span class="course-badge">16 ejercicios</span>
+        </div>
+      </div>
+      <div class="course-row fade-up">
+        <div>
+          <div class="course-name">🌐 Redes y Networking</div>
+          <div class="course-desc">Modelo OSI, TCP/IP, subnetting, protocolos esenciales de red</div>
+        </div>
+        <div class="course-meta">
+          <span class="course-badge">4 módulos</span>
+          <span class="course-badge">9 ejercicios</span>
+        </div>
+      </div>
+      <div class="course-row fade-up">
+        <div>
+          <div class="course-name">🐧 Linux y SysAdmin</div>
+          <div class="course-desc">Comandos, permisos, hardening de sistemas, administración de servicios</div>
+        </div>
+        <div class="course-meta">
+          <span class="course-badge">4 módulos</span>
+          <span class="course-badge">9 ejercicios</span>
+        </div>
+      </div>
+      <div class="course-row fade-up">
+        <div>
+          <div class="course-name">🔍 OSINT & Threat Intelligence</div>
+          <div class="course-desc">Reconocimiento pasivo, Google Dorks, Shodan, análisis de actores de amenaza</div>
+        </div>
+        <div class="course-meta">
+          <span class="course-badge">3 módulos</span>
+          <span class="course-badge">15 ejercicios</span>
+        </div>
+      </div>
+      <div class="course-row fade-up">
+        <div>
+          <div class="course-name">🐍 Python para Ciberseguridad</div>
+          <div class="course-desc">Scripting para automatización de seguridad, análisis de tráfico, detección de amenazas</div>
+        </div>
+        <div class="course-meta">
+          <span class="course-badge">3 módulos</span>
+          <span class="course-badge">18 ejercicios</span>
+        </div>
+      </div>
+      <div class="course-row red fade-up">
+        <div>
+          <div class="course-name">⚔️ Red Team & Pentesting</div>
+          <div class="course-desc">Metodología, OSINT ofensivo, Nmap, Metasploit, escalación de privilegios, OWASP Top 10, SQL Injection</div>
+        </div>
+        <div class="course-meta">
+          <span class="course-badge red">4 módulos</span>
+          <span class="course-badge red">21 ejercicios</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULADOR -->
+<section id="simulador">
+  <div class="container">
+    <p class="section-label fade-up">Simulador</p>
+    <h2 class="section-title fade-up">10 Escenarios de incidentes reales</h2>
+    <p class="section-desc fade-up">Analiza evidencia real — logs SSH, headers de email, tráfico de red — y responde como lo haría un analista SOC profesional.</p>
+    <div class="sim-grid">
+      <div class="sim-col fade-up">
+        <div class="sim-col-title blue">🔵 SOC / Blue Team</div>
+        <div class="sim-item">
+          <span class="sim-item-name">Fuerza Bruta SSH</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-green">Principiante</span>
+            <span class="sim-pts">100 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Análisis Email de Phishing</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-green">Principiante</span>
+            <span class="sim-pts">120 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Detección SQL Injection</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-green">Principiante</span>
+            <span class="sim-pts">130 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Comunicación C2</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-yellow">Intermedio</span>
+            <span class="sim-pts">180 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Detección de Ransomware</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-yellow">Intermedio</span>
+            <span class="sim-pts">200 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Movimiento Lateral</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-red">Avanzado</span>
+            <span class="sim-pts">300 pts</span>
+          </div>
+        </div>
+      </div>
+      <div class="sim-col fade-up">
+        <div class="sim-col-title red">🔴 Análisis de Malware</div>
+        <div class="sim-item">
+          <span class="sim-item-name">PowerShell Dropper</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-yellow">Intermedio</span>
+            <span class="sim-pts">150 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Tráfico de Red Malicioso</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-yellow">Intermedio</span>
+            <span class="sim-pts">200 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Mecanismos de Persistencia</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-yellow">Intermedio</span>
+            <span class="sim-pts">200 pts</span>
+          </div>
+        </div>
+        <div class="sim-item">
+          <span class="sim-item-name">Proceso Malicioso en Memoria</span>
+          <div class="sim-item-right">
+            <span class="sim-diff diff-red">Avanzado</span>
+            <span class="sim-pts">250 pts</span>
+          </div>
+        </div>
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:var(--muted); font-size:.85rem;">Total posible</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:1.3rem; font-weight:700; color:var(--green);">1,530 pts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECNOLOGÍAS -->
+<section id="tecnologias">
+  <div class="container">
+    <p class="section-label fade-up">Stack tecnológico</p>
+    <h2 class="section-title fade-up">Hecho con las herramientas correctas</h2>
+    <p class="section-desc fade-up">Cada tecnología fue elegida por una razón concreta — sin dependencias innecesarias, sin sobre-ingeniería.</p>
+    <div class="tech-grid">
+      <div class="tech-card fade-up">
+        <div class="tech-icon" style="background:rgba(255,214,0,.1);">🐍</div>
+        <div>
+          <h4>Python</h4>
+          <p>Lenguaje estándar en ciberseguridad. Backend y lógica de negocio.</p>
+        </div>
+      </div>
+      <div class="tech-card fade-up">
+        <div class="tech-icon" style="background:rgba(0,212,255,.1);">⚗️</div>
+        <div>
+          <h4>Flask</h4>
+          <p>Micro-framework web. API REST limpia sin overhead innecesario.</p>
+        </div>
+      </div>
+      <div class="tech-card fade-up">
+        <div class="tech-icon" style="background:rgba(0,255,136,.1);">🗄️</div>
+        <div>
+          <h4>SQLite</h4>
+          <p>Base de datos embebida. Sin servidor separado, despliegue simple.</p>
+        </div>
+      </div>
+      <div class="tech-card fade-up">
+        <div class="tech-icon" style="background:rgba(244,67,54,.1);">🌐</div>
+        <div>
+          <h4>JavaScript Vanilla</h4>
+          <p>SPA sin frameworks. Control total, cero dependencias externas.</p>
+        </div>
+      </div>
+      <div class="tech-card fade-up">
+        <div class="tech-icon" style="background:rgba(150,100,255,.1);">🎨</div>
+        <div>
+          <h4>HTML5 + CSS3</h4>
+          <p>Frontend responsive con tema oscuro optimizado para el sector.</p>
+        </div>
+      </div>
+      <div class="tech-card fade-up">
+        <div class="tech-icon" style="background:rgba(255,150,0,.1);">🚀</div>
+        <div>
+          <h4>Gunicorn + Railway</h4>
+          <p>Servidor de producción WSGI. Despliegue continuo desde GitHub.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARQUITECTURA -->
+<section id="arquitectura">
+  <div class="container">
+    <p class="section-label fade-up">Arquitectura</p>
+    <h2 class="section-title fade-up">¿Cómo funciona por dentro?</h2>
+    <p class="section-desc fade-up">Arquitectura cliente-servidor con API REST. El frontend nunca recibe respuestas correctas — toda la lógica vive en el servidor.</p>
+    <div class="arch-flow fade-up">
+      <div class="arch-box">
+        <div class="arch-box-icon">👤</div>
+        <div class="arch-box-title">Usuario</div>
+        <div class="arch-box-sub">Navegador web</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <div class="arch-box-icon">⚡</div>
+        <div class="arch-box-title">SPA JavaScript</div>
+        <div class="arch-box-sub">app.js — Enrutador</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <div class="arch-box-icon">🔧</div>
+        <div class="arch-box-title">API REST Flask</div>
+        <div class="arch-box-sub">server.py — Lógica</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <div class="arch-box-icon">🗄️</div>
+        <div class="arch-box-title">SQLite</div>
+        <div class="arch-box-sub">5 tablas de datos</div>
+      </div>
+    </div>
+    <div class="arch-details">
+      <div class="arch-detail fade-up">
+        <div class="arch-detail-icon">📁</div>
+        <div>
+          <h4>courses.py</h4>
+          <p>Diccionario Python con 6 cursos, módulos, lecciones, teoría y ejercicios. +2500 líneas de contenido educativo.</p>
+        </div>
+      </div>
+      <div class="arch-detail fade-up">
+        <div class="arch-detail-icon">🎬</div>
+        <div>
+          <h4>simulator.py</h4>
+          <p>10 escenarios con evidencia real. Las respuestas correctas se eliminan antes de enviar datos al cliente.</p>
+        </div>
+      </div>
+      <div class="arch-detail fade-up">
+        <div class="arch-detail-icon">🗄️</div>
+        <div>
+          <h4>database.py</h4>
+          <p>5 tablas: users, progress, exercise_submissions, notes, simulator_completions. WAL mode para concurrencia.</p>
+        </div>
+      </div>
+      <div class="arch-detail fade-up">
+        <div class="arch-detail-icon">🏠</div>
+        <div>
+          <h4>server.py</h4>
+          <p>15+ endpoints REST. Decorador <code>@login_required</code> protege rutas privadas. Sirve el frontend estático.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEGURIDAD -->
+<section id="seguridad">
+  <div class="container">
+    <p class="section-label fade-up">Seguridad</p>
+    <h2 class="section-title fade-up">Seguridad implementada desde el diseño</h2>
+    <p class="section-desc fade-up">Una plataforma de ciberseguridad debe ser segura ella misma. Cada vulnerabilidad del OWASP Top 10 fue considerada durante el desarrollo.</p>
+    <div class="security-grid">
+      <div class="security-card fade-up">
+        <h3>🔐 Hash de contraseñas</h3>
+        <p>SHA-256 con <code>salt</code> único por usuario. Nunca se almacena la contraseña en texto claro. Incluso si la base de datos fuera comprometida, las contraseñas están protegidas.</p>
+      </div>
+      <div class="security-card fade-up">
+        <h3>🛡️ Anti SQL Injection</h3>
+        <p>Todas las queries usan parámetros <code>?</code> — consultas parametrizadas. Ninguna entrada del usuario se concatena directamente al SQL.</p>
+      </div>
+      <div class="security-card fade-up">
+        <h3>🔒 Autenticación por sesión</h3>
+        <p>Decorador <code>@login_required</code> en todos los endpoints protegidos. Sin sesión válida el servidor devuelve 401 inmediatamente.</p>
+      </div>
+      <div class="security-card fade-up">
+        <h3>🙈 Respuestas ocultas</h3>
+        <p>Las respuestas correctas del simulador nunca salen del servidor. Se eliminan del objeto antes de enviarlo al cliente — el usuario no puede hacer trampa inspeccionando el código.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO USAR -->
+<section id="como-funciona">
+  <div class="container">
+    <p class="section-label fade-up">Flujo de usuario</p>
+    <h2 class="section-title fade-up">¿Cómo se usa la plataforma?</h2>
+    <p class="section-desc fade-up">En cinco pasos, un usuario pasa de no tener cuenta a completar su primer escenario de incidente real.</p>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Registro e inicio de sesión</h3>
+          <p>El usuario crea su cuenta con nombre de usuario, contraseña y nombre completo. El servidor hashea la contraseña con SHA-256 + salt y crea la sesión segura.</p>
+        </div>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Panel de control (Dashboard)</h3>
+          <p>Vista general del progreso: lecciones completadas, tasa de precisión en ejercicios, avance por curso y puntos del simulador acumulados.</p>
+        </div>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Selecciona un curso y estudia</h3>
+          <p>Elige uno de los 6 cursos, navega por módulos y lecciones. Lee la teoría y responde los ejercicios — el sistema da retroalimentación inmediata con explicación de cada respuesta.</p>
+        </div>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Entra al Simulador</h3>
+          <p>Elige un escenario según tu nivel. Analiza la evidencia real — logs, alertas, tráfico de red — y responde las preguntas de investigación como lo haría un analista SOC.</p>
+        </div>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Acumula puntos y completa la ruta</h3>
+          <p>Cada escenario completado suma puntos. El objetivo es completar los 10 escenarios y alcanzar los 1,530 puntos máximos posibles.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGÍA -->
+<section id="metodologia">
+  <div class="container">
+    <p class="section-label fade-up">Investigación</p>
+    <h2 class="section-title fade-up">Metodologías aplicadas</h2>
+    <p class="section-desc fade-up">El proyecto no solo es desarrollo de software — está respaldado por metodologías de investigación formales y marcos pedagógicos reconocidos.</p>
+    <div class="method-grid">
+      <div class="method-card fade-up">
+        <div class="method-num">01 / Investigación</div>
+        <h3>Investigación Aplicada</h3>
+        <p>Construye una solución real a un problema concreto — la brecha de formación en ciberseguridad en español.</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-num">02 / Alcance</div>
+        <h3>Descriptivo-Propositivo</h3>
+        <p>Describe el problema (brecha de talento, falta de plataformas) y propone e implementa la solución.</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-num">03 / Fuentes</div>
+        <h3>Investigación Documental</h3>
+        <p>Contenido basado en OWASP Top 10, MITRE ATT&CK, NIST SP 800-61 y normativa ecuatoriana MINTEL/LOPDP.</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-num">04 / Desarrollo</div>
+        <h3>Ágil Iterativo</h3>
+        <p>Diseño → implementación → prueba → ajuste. Módulo por módulo, validando cada funcionalidad.</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-num">05 / Pedagogía</div>
+        <h3>Constructivismo</h3>
+        <p>El estudiante aprende haciendo. Ejercicios interactivos con retroalimentación inmediata (Prince, 2004).</p>
+      </div>
+      <div class="method-card fade-up">
+        <div class="method-num">06 / Motivación</div>
+        <h3>Gamificación</h3>
+        <p>Puntos, progreso y retos progresivos para mantener la motivación del aprendiz (Deterding et al., 2011).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚔ Contra Amenaza</div>
+  <p style="margin-bottom:8px;">Plataforma de Entrenamiento en Ciberseguridad Blue Team & Red Team</p>
+  <p>Proyecto de Fin de Curso — Manuel Chicaiza · <a href="https://github.com/Manuxosos/ContrAmenaza" target="_blank">GitHub</a></p>
+  <p style="margin-top:16px; font-size:.75rem; opacity:.5;">Tecnología Superior en Ciberseguridad · 2026</p>
+</footer>
+
+<script>
+  // Intersection Observer para animaciones fade-up
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach((el, i) => {
+    el.style.transitionDelay = (i % 4) * 0.08 + 's';
+    observer.observe(el);
+  });
+
+  // Highlight nav link activo
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'var(--cyan)' : '';
+    });
+  });
+</script>
+</body>
+</html>
